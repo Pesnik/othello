@@ -46,8 +46,10 @@ public:
 	}
 	void reset() {
 		Board.resize(8, vector<int>(8));
-		Board[3][3] = Board[4][4] = 1;
-		Board[4][3] = Board[3][4] = 2;
+		// Board[3][3] = Board[4][4] = 1;
+		// Board[4][3] = Board[3][4] = 2;
+		Board[3][3] = Board[4][4] = AI;
+		Board[4][3] = Board[3][4] = Human;
 		Valids.clear();							
 	}
 	// void reset(Oh__Othello obj) {
@@ -199,7 +201,7 @@ Oh__Othello Oh__Othello::create_board(pair<pair<int, int>, pair<int, int>> mv) {
 	} else if(ax.second == y) {
 		for (int i = min(ax.first, x); i <= max(ax.first, x); ++i) {
 			NBoard.Board[i][y] = player;
-			NBoard.value += Weight1[x][i];
+			NBoard.value += Weight1[i][y];
 		}
 	} else {
 		int a = ax.first;
@@ -272,7 +274,6 @@ Oh__Othello Oh__Othello::Oh__AI(Oh__Othello child, int level, int target) {
  	}
  	if (level & 1) {
  		// return min
-
  		cout << "L E V E L - " << level << endl;
  		if (all.empty()) return 10000;
  		sort(all.begin(), all.end());	
@@ -301,7 +302,7 @@ Oh__Othello Oh__Othello::Oh__AI(Oh__Othello child, int level, int target) {
 void Oh__Othello::play() {
 	if (player == AI) {
 		// AI Will Play
-		Oh__Othello best = Oh__AI(*this, 0,  3);
+		Oh__Othello best = Oh__AI(*this, 0,  1);
 		// best.show();
 		// refresh(best.x, best.y);
 		// best.clean();
@@ -322,7 +323,8 @@ void Oh__Othello::play() {
 		if (Board[r - 1][c - 1] == 3) break;
 		else cout << "Please Select a Valid Region" << endl;
 	}
-	refresh(r - 1, c - 1);	
+	refresh(r - 1, c - 1);
+	show();	
 	player = AI;
 	play();	
 }
