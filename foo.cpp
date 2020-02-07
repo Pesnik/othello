@@ -52,6 +52,20 @@ public:
 		Board[4][3] = Board[3][4] = Human;
 		Valids.clear();							
 	}
+	pair<int, int> black() {
+		int b = 0, cnt = 0;
+		for (int r = 0; r < 8; ++r) 
+			for (int c = 0; c < 8; ++c) 
+				if (Board[r][c] == AI) b++, cnt += Weight1[r][c];
+		return {b, cnt};
+	}
+	pair<int, int> white() {
+		int w = 0, cnt = 0;
+		for (int r = 0; r < 8; ++r) 
+			for (int c = 0; c < 8; ++c) 
+				if (Board[r][c] == Human) w++, cnt += Weight1[r][c];
+		return {w, cnt};
+	}	
 	// void reset(Oh__Othello obj) {
 		
 	void show() {
@@ -190,6 +204,7 @@ Oh__Othello Oh__Othello::create_board(pair<pair<int, int>, pair<int, int>> mv) {
 	// return this setup
 	Oh__Othello NBoard = *this; // copy the current board
 	// execute the move
+	NBoard.value = 0;
 	pair<int, int> ax = mv.second;
 	int x = mv.first.first;
 	int y = mv.first.second;
@@ -261,11 +276,14 @@ Oh__Othello Oh__Othello::Oh__AI(Oh__Othello child, int level, int target) {
  	// child.show();
  	// cout << child.Valids.size() << endl;
  	vector<Oh__Othello> all;
+ 	
  	for (auto mv : child.Valids) {
  		// cout << mv.first.first + 1 << " " << mv.first.second + 1 << endl;
  		Oh__Othello f = child.create_board(mv);
  		// f.x = mv.first.first;
  		// f.y = mv.first.second;
+ 		if (level & 1) f.player = AI;
+	 	else f.player = Human;
  		f.show();
  		cout << f.value << endl;
  		all.push_back(f);
@@ -302,7 +320,7 @@ Oh__Othello Oh__Othello::Oh__AI(Oh__Othello child, int level, int target) {
 void Oh__Othello::play() {
 	if (player == AI) {
 		// AI Will Play
-		Oh__Othello best = Oh__AI(*this, 0,  1);
+		Oh__Othello best = Oh__AI(*this, 0,  2);
 		// best.show();
 		// refresh(best.x, best.y);
 		// best.clean();
@@ -313,6 +331,9 @@ void Oh__Othello::play() {
 	}
 	valid_moves();
 	show();
+
+	cout << "AI Has: " << black().first << " With Point " << black().second << endl;
+	cout << "Human Has: " << white().first << " With Point " << white().second << endl;
 	cout << "Valid Moves Are: \n";
 	for (auto x : Valids) {
 		cout << x.first.first + 1 << " " << x.first.second + 1 << endl;
